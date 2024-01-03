@@ -1,6 +1,6 @@
 import express from "express";
 import bcrypt from "bcrypt";
-import addUser, { findUser, getUser, updatePassword } from "../Controllers/index.js";
+import addUser, { findUser, getUser, updateCapstone, updatePassword, updatePortfolio } from "../Controllers/index.js";
 import { generateToken } from "../Authorization/auth.js";
 import { transport } from "../Mailer/nodemailer.js";
 
@@ -11,21 +11,65 @@ router.post("/add",async(req,res)=>{
         const salt=await bcrypt.genSalt(10);
         const hashedPassword=await bcrypt.hash(req.body.password,salt);
         const data={
-            name:req.body.name,
+            username:req.body.username,
             email:req.body.email,
             password:hashedPassword,
-            number:req.body.number,
-            batch:req.body.batch
+            batch:"B51 WD Tamil",
+            dashboard:{
+                attendance:[],
+                codekata:[],
+                webkata:[],
+                tasks:{
+                    count:0,
+                    links:{}
+                }
+            },
+            capstone:{
+                title:"",
+                status:"",
+                frontendCode:"",
+                backendCode:"",
+                frontendUrl:"",
+                backendUrl:"",
+                comments:""
+            },
+            query:{
+                 category:"",
+                 subCategory:"",
+                 voice:"",
+                 queryTitle:"",
+                 queryDescription:"",
+                 from:"",
+                 to:"",
+                 file:""
+            },
+            portfolio:{
+                status:"",
+                reviewed:"",
+                comment:"",
+                link:""
+            },
+            application:"",
+            certificate:"",
+            interview:"",
+            leaves:{
+                datas:{},
+                count:0
+            },
+            testimonial:{
+                links:{},
+                count:0
+            }
         }
         const user=await addUser(data);
-        res.status(200).json({message:"User added successfully",user:user,token})
+        res.status(200).json({message:"Registration successfull",user})
     } catch (error) {
-        res.status(500).json({message:"User email or phone number already exists"})
+        res.status(500).json({message:"User email already exists"})
         console.log("error adding data")
     }
 })
 
-router.get("/login",async(req,res)=>{
+router.post("/login",async(req,res)=>{
     try {
         const checkUserData=await getUser(req.body.email);
         if(!checkUserData){
@@ -45,13 +89,13 @@ router.get("/login",async(req,res)=>{
     }
 })
 
-router.get("/forgot",async(req,res)=>{
+router.post("/forgot",async(req,res)=>{
     try {
         const checkUserData=await getUser(req.body.email);
         if(!checkUserData){
             return res.status(400).json({message:"User not registered"});
         }else{
-                const link=`http://localhost:8080/reset/${checkUserData._id}`
+                const link=`http://localhost:5173/reset/${checkUserData._id}`
                 const composeMail={
                     from:"fullstackpurpose@gmail.com",
                     to:"fabiraja21052002@gmail.com",
@@ -86,4 +130,23 @@ router.post("/reset/:id",async(req,res)=>{
     }
 })
 
+router.post("/portfolio",async(req,res)=>{
+    try {
+        const portfolioSubmission=await updatePortfolio(req.body._id,req.body.link);
+        res.status(200).json({message:"portfolio submitted successfully"});
+    } catch (error) {
+        res.status(500).json({message:"error submitting portfolio"})
+        console.log("error submitting portfolio",error)
+    }
+})
+
+router.post("/capstone",async(req,res)=>{
+    try {
+        const capstoneSubmission=await updateCapstone(req.body);
+        res.status(200).json({message:"capstone submitted successfully"});
+    } catch (error) {
+        res.status(500).json({message:"error submitting capstone"})
+        console.log("error submitting capstone",error)
+    }
+})
 export const Router=router;

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const userSchema=new mongoose.Schema({
-    name:{
+    username:{
         type:String,
         required:true,
         trim:true,
@@ -17,19 +17,34 @@ const userSchema=new mongoose.Schema({
         type:String,
         required:true
     },
-    number:{
-        type:Number,
-        required:true,
-        trim:true,
-        unique:true,
+    dashboard:{
+        type:Object
     },
-    batch:{
-        type:String,
-        required:true,
-        trim:true,
+    capstone:{
+        type:Object
+    },
+    query:{
+        type:Object
+    },
+    portfolio:{
+        type:Object
+    },
+    leaves:{
+        type:Object
+    },
+    application:{
+        type:String
+    },
+    certificate:{
+        type:String
+    },
+    interview:{
+        type:String
+    },
+    testimonial:{
+        type:Object
     }
-   
 });
 
-const User=mongoose.model("dsfdsfsdf",userSchema);
+const User=mongoose.model("users",userSchema);
 export {User};
