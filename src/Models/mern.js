@@ -41,5 +41,5 @@ const mernData=new mongoose.Schema({
     }
 });
 
-const mern=mongoose.model("Mern",mernData);
+const mern=mongoose.model("MERN",mernData);
 export {mern};

@@ -17,9 +17,10 @@ router.post("/add",async(req,res)=>{
             password:hashedPassword,
             batch:"B51 WD Tamil",
             dashboard:{
-                attendance:[1,2,3,4,5,8,9,10],
-                codekata:[2,4,1,5,3,1,4],
-                webkata:[4,5,1,3,2,6,3],
+                attendance:[],
+                codekata:[],
+                webkata:[],
+                task:[],
                 tasks:{
                     count:0,
                     title:"",
@@ -258,6 +259,16 @@ router.post("/task",async(req,res)=>{
     } catch (error) {
         res.status(500).json({message:"error submitting task"})
         console.log("error submitting task",error)
+    }
+})
+
+router.post("/refresh",async(req,res)=>{
+    try {
+        const checkUserData=await getUser(req.body.email);
+        return res.status(200).json({message:"find success",user:checkUserData})
+    } catch (error) {
+        res.status(500).json({message:error})
+        console.log("error login user")
     }
 })
 export const Router=router;

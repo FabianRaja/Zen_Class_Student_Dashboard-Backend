@@ -24,5 +24,5 @@ const company=new mongoose.Schema({
    
 });
 
-const placement=mongoose.model("Placements",company);
+const placement=mongoose.model("PLACEMENTS",company);
 export {placement};

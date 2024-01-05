@@ -20,5 +20,5 @@ const userData=new mongoose.Schema({
     }
 });
 
-const UserDetails=mongoose.model("usersData",userData);
+const UserDetails=mongoose.model("HISTORY",userData);
 export {UserDetails};

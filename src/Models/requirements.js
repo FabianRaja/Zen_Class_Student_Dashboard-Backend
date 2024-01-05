@@ -35,5 +35,5 @@ const requirements=new mongoose.Schema({
     },
 });
 
-const requirement=mongoose.model("Requirements",requirements);
+const requirement=mongoose.model("REQUIREMENTS",requirements);
 export {requirement};
