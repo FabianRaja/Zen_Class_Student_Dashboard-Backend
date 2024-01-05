@@ -1,6 +1,6 @@
 import express from "express";
 import bcrypt from "bcrypt";
-import addUser, { findUser, getUser, updateCapstone, updatePassword, updatePortfolio } from "../Controllers/index.js";
+import addUser, { findUser, getUser, leaveSubmission, querySubmission, taskSubmission, testimonialSubmission, updateCapstone, updatePassword, updatePortfolio } from "../Controllers/index.js";
 import { generateToken } from "../Authorization/auth.js";
 import { transport } from "../Mailer/nodemailer.js";
 
@@ -16,12 +16,17 @@ router.post("/add",async(req,res)=>{
             password:hashedPassword,
             batch:"B51 WD Tamil",
             dashboard:{
-                attendance:[],
-                codekata:[],
-                webkata:[],
+                attendance:[1,2,3,4,5,8,9,10],
+                codekata:[2,4,1,5,3,1,4],
+                webkata:[4,5,1,3,2,6,3],
                 tasks:{
                     count:0,
-                    links:{}
+                    title:"",
+                    frontend:"",
+                    backend:"",
+                    frontendUrl:"",
+                    backendUrl:"",
+                    comment:""
                 }
             },
             capstone:{
@@ -53,12 +58,16 @@ router.post("/add",async(req,res)=>{
             certificate:"",
             interview:"",
             leaves:{
-                datas:{},
+                from:"",
+                to:"",
+                reason:"",
                 count:0
             },
             testimonial:{
-                links:{},
-                count:0
+                count:0,
+                photo:"",
+                video:"",
+                description:""
             }
         }
         const user=await addUser(data);
@@ -147,6 +156,46 @@ router.post("/capstone",async(req,res)=>{
     } catch (error) {
         res.status(500).json({message:"error submitting capstone"})
         console.log("error submitting capstone",error)
+    }
+})
+
+router.post("/leave",async(req,res)=>{
+    try {
+        const leaveSubmissionApplication=await leaveSubmission(req.body);
+        res.status(200).json({message:"leave application submitted"});
+    } catch (error) {
+        res.status(500).json({message:"error submitting capstone"})
+        console.log("error submitting capstone",error)
+    }
+})
+
+router.post("/testimonial",async(req,res)=>{
+    try {
+        const testimonialSubmissionApplication=await testimonialSubmission(req.body);
+        res.status(200).json({message:"testimonial submitted"});
+    } catch (error) {
+        res.status(500).json({message:"error submitting testimonial"})
+        console.log("error submitting testimonial",error)
+    }
+})
+
+router.post("/query",async(req,res)=>{
+    try {
+        const querySubmissionForm=await querySubmission(req.body);
+        res.status(200).json({message:"query submitted"});
+    } catch (error) {
+        res.status(500).json({message:"error submitting query"})
+        console.log("error submitting query",error)
+    }
+})
+
+router.post("/task",async(req,res)=>{
+    try {
+        const taskSubmissionApplication=await taskSubmission(req.body);
+        res.status(200).json({message:"task submitted"});
+    } catch (error) {
+        res.status(500).json({message:"error submitting task"})
+        console.log("error submitting task",error)
     }
 })
 export const Router=router;
