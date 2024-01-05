@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import addUser, { findUser, getUser, leaveSubmission, querySubmission, taskSubmission, testimonialSubmission, updateCapstone, updatePassword, updatePortfolio } from "../Controllers/index.js";
 import { generateToken } from "../Authorization/auth.js";
 import { transport } from "../Mailer/nodemailer.js";
+import addUserHistory, { findUserHistory, findUserHistoryAndUpdateForLeaves, findUserHistoryAndUpdateForQuery, findUserHistoryAndUpdateForTask, findUserHistoryAndUpdateForTestimonial } from "../Controllers/data.js";
 
 const router=express.Router();
 
@@ -71,6 +72,13 @@ router.post("/add",async(req,res)=>{
             }
         }
         const user=await addUser(data);
+        const userDetails={
+            email:req.body.email,
+            tasks:[],
+            leaves:[],
+            testimonial:[]
+        }
+        const history=await addUserHistory(userDetails);
         res.status(200).json({message:"Registration successfull",user})
     } catch (error) {
         res.status(500).json({message:"User email already exists"})
@@ -162,16 +170,39 @@ router.post("/capstone",async(req,res)=>{
 router.post("/leave",async(req,res)=>{
     try {
         const leaveSubmissionApplication=await leaveSubmission(req.body);
+        //for history
+        const findUser=await findUserHistory(req.body.email);
+        const data={
+            from:req.body.from,
+            to:req.body.to,
+            reason:req.body.reason
+        }
+        const leaves=findUser.leaves;
+        const updating=leaves.push(data);
+        const findUpdate=await findUserHistoryAndUpdateForLeaves(findUser._id,leaves);
+
+
         res.status(200).json({message:"leave application submitted"});
     } catch (error) {
-        res.status(500).json({message:"error submitting capstone"})
-        console.log("error submitting capstone",error)
+        res.status(500).json({message:"error submitting leave application"})
+        console.log("error submitting leave application",error)
     }
 })
 
 router.post("/testimonial",async(req,res)=>{
     try {
         const testimonialSubmissionApplication=await testimonialSubmission(req.body);
+        //for history
+        const findUser=await findUserHistory(req.body.email);
+        const data={
+            photo:req.body.photo,
+            video:req.body.video,
+            description:req.body.description
+        }
+        const testimonial=findUser.testimonial;
+        const updating=testimonial.push(data);
+        const findUpdate=await findUserHistoryAndUpdateForTestimonial(findUser._id,testimonial);
+
         res.status(200).json({message:"testimonial submitted"});
     } catch (error) {
         res.status(500).json({message:"error submitting testimonial"})
@@ -182,6 +213,22 @@ router.post("/testimonial",async(req,res)=>{
 router.post("/query",async(req,res)=>{
     try {
         const querySubmissionForm=await querySubmission(req.body);
+        //for history
+        const findUser=await findUserHistory(req.body.email);
+        const data={
+            category:req.body.category,
+            subCategory:req.body.subCategory,
+            voice:req.body.voice,
+            title:req.body.queryTitle,
+            description:req.body.queryDescription,
+            from:req.body.from,
+            to:req.body.to,
+            photoUrl:req.body.file
+        }
+        const query=findUser.query;
+        const updating=query.push(data);
+        const findUpdate=await findUserHistoryAndUpdateForQuery(findUser._id,query);
+
         res.status(200).json({message:"query submitted"});
     } catch (error) {
         res.status(500).json({message:"error submitting query"})
@@ -192,6 +239,21 @@ router.post("/query",async(req,res)=>{
 router.post("/task",async(req,res)=>{
     try {
         const taskSubmissionApplication=await taskSubmission(req.body);
+
+         //for history
+         const findUser=await findUserHistory(req.body.email);
+         const data={
+            title:req.body.title,
+            frontendSourceCode:req.body.frontend,
+            backendSourceCode:req.body.backend,
+            frontendUrl:req.body.frontendUrl,
+            backendUrl:req.body.backendUrl,
+            comments:req.body.comment
+         }
+         const task=findUser.tasks;
+         const updating=task.push(data);
+         const findUpdate=await findUserHistoryAndUpdateForTask(findUser._id,task);
+
         res.status(200).json({message:"task submitted"});
     } catch (error) {
         res.status(500).json({message:"error submitting task"})
