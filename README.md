@@ -2,6 +2,11 @@
 
 [Live Server](https://zenportal.onrender.com/)
 
+## Demo Account : 
+
+* Email : demo@gmail.com
+* Password : Demo@123
+
 ## Packages : 
 
 * cors
