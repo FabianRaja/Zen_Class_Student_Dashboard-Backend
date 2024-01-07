@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+//creating model schema for the database collection MERN
 const mernData=new mongoose.Schema({
     heading:{
         type:String,

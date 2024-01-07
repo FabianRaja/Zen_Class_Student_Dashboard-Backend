@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+//creating model schema for the database collection STUDENTS
 const userSchema=new mongoose.Schema({
     username:{
         type:String,

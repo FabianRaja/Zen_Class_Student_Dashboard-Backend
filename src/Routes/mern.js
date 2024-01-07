@@ -1,8 +1,12 @@
+//importing express to use router
 import express from "express";
+//importing functions from controller
 import addClassDetails, { addPlacementsData, addRequirementsData, getClassDetails, getPlacementsData, getRequirementsData } from "../Controllers/mern.js";
 
+//setting express.Router as router
 const router=express.Router();
 
+//to add class data 
 router.post("/addClass",async(req,res)=>{
 try {
     const getData=await addClassDetails(req.body);
@@ -13,6 +17,7 @@ try {
 }
 })
 
+//to find the class data
 router.get("/getClass",async(req,res)=>{
     try {
         const getData=await getClassDetails();
@@ -23,6 +28,7 @@ router.get("/getClass",async(req,res)=>{
     }
 })
 
+//to add requirements data
 router.post("/addRequirements",async(req,res)=>{
     try {
         const addData=await addRequirementsData(req.body);
@@ -33,6 +39,7 @@ router.post("/addRequirements",async(req,res)=>{
     }
 })
     
+//to find requirements data
 router.get("/getRequirements",async(req,res)=>{
         try {
             const getData=await getRequirementsData();
@@ -43,6 +50,7 @@ router.get("/getRequirements",async(req,res)=>{
         }
 })
 
+//to add placements data
 router.post("/addPlacement",async(req,res)=>{
     try {
         const addData=await addPlacementsData(req.body);
@@ -53,6 +61,7 @@ router.post("/addPlacement",async(req,res)=>{
     }
 })
 
+//to find placements data
 router.get("/getPlacement",async(req,res)=>{
     try {
         const addData=await getPlacementsData();
@@ -62,4 +71,6 @@ router.get("/getPlacement",async(req,res)=>{
         console.log("error get placements data",error)
     }
 })
+
+//exporting router as mernRouter
 export const mernRouter=router;

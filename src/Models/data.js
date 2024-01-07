@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+//creating model schema for the database collection HISTORY
 const userData=new mongoose.Schema({
     email:{
         type:String,

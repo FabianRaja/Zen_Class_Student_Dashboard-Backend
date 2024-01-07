@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+//creating model schema for the database collection PLACEMENTS
 const company=new mongoose.Schema({
     studentName:{
         type:String,

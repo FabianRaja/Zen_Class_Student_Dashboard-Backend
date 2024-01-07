@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+//creating model schema for the database collection REQUIREMENTS
 const requirements=new mongoose.Schema({
     name:{
         type:String,
