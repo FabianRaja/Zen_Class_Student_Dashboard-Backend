@@ -1,7 +1,7 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import addUser, { findUser, getUser, leaveSubmission, querySubmission, taskSubmission, testimonialSubmission, updateCapstone, updatePassword, updatePortfolio } from "../Controllers/index.js";
-import { generateToken } from "../Authorization/auth.js";
+import { generateToken, isAuthorized } from "../Authorization/auth.js";
 import { transport } from "../Mailer/nodemailer.js";
 import addUserHistory, { findUserHistory, findUserHistoryAndUpdateForLeaves, findUserHistoryAndUpdateForQuery, findUserHistoryAndUpdateForTask, findUserHistoryAndUpdateForTestimonial } from "../Controllers/data.js";
 
@@ -113,12 +113,21 @@ router.post("/forgot",async(req,res)=>{
         if(!checkUserData){
             return res.status(400).json({message:"User not registered"});
         }else{
-                const link=`http://localhost:5173/reset/${checkUserData._id}`
+                const link=`https://zenportal.netlify.app/reset/${checkUserData._id}`
                 const composeMail={
                     from:"fullstackpurpose@gmail.com",
-                    to:"fabiraja21052002@gmail.com",
+                    to:req.body.email,
                     subject:"Reset Password Link",
-                    html:`<a href=${link}>Reset</a>`
+                    html:`
+                    <h1>Click this Link to Reset Password</h1><br/>
+                    <button style="
+                    background-color:blue;
+                    border: none;
+                    border-radius: 15px;
+                    width: 80px;
+                    height: 50px;
+                  "><a href=${link} style="color:white" >Reset Password</a></button>
+                    `
                 }
                transport.sendMail(composeMail,(error,info)=>{
                 if(error){
@@ -148,7 +157,7 @@ router.post("/reset/:id",async(req,res)=>{
     }
 })
 
-router.post("/portfolio",async(req,res)=>{
+router.post("/portfolio",isAuthorized,async(req,res)=>{
     try {
         const portfolioSubmission=await updatePortfolio(req.body._id,req.body.link);
         res.status(200).json({message:"portfolio submitted successfully"});
@@ -158,7 +167,7 @@ router.post("/portfolio",async(req,res)=>{
     }
 })
 
-router.post("/capstone",async(req,res)=>{
+router.post("/capstone",isAuthorized,async(req,res)=>{
     try {
         const capstoneSubmission=await updateCapstone(req.body);
         res.status(200).json({message:"capstone submitted successfully"});
@@ -168,7 +177,7 @@ router.post("/capstone",async(req,res)=>{
     }
 })
 
-router.post("/leave",async(req,res)=>{
+router.post("/leave",isAuthorized,async(req,res)=>{
     try {
         const leaveSubmissionApplication=await leaveSubmission(req.body);
         //for history
@@ -190,7 +199,7 @@ router.post("/leave",async(req,res)=>{
     }
 })
 
-router.post("/testimonial",async(req,res)=>{
+router.post("/testimonial",isAuthorized,async(req,res)=>{
     try {
         const testimonialSubmissionApplication=await testimonialSubmission(req.body);
         //for history
@@ -211,7 +220,7 @@ router.post("/testimonial",async(req,res)=>{
     }
 })
 
-router.post("/query",async(req,res)=>{
+router.post("/query",isAuthorized,async(req,res)=>{
     try {
         const querySubmissionForm=await querySubmission(req.body);
         //for history
@@ -237,7 +246,7 @@ router.post("/query",async(req,res)=>{
     }
 })
 
-router.post("/task",async(req,res)=>{
+router.post("/task",isAuthorized,async(req,res)=>{
     try {
         const taskSubmissionApplication=await taskSubmission(req.body);
 
@@ -259,16 +268,6 @@ router.post("/task",async(req,res)=>{
     } catch (error) {
         res.status(500).json({message:"error submitting task"})
         console.log("error submitting task",error)
-    }
-})
-
-router.post("/refresh",async(req,res)=>{
-    try {
-        const checkUserData=await getUser(req.body.email);
-        return res.status(200).json({message:"find success",user:checkUserData})
-    } catch (error) {
-        res.status(500).json({message:error})
-        console.log("error login user")
     }
 })
 export const Router=router;
