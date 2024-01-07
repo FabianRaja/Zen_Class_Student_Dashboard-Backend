@@ -28,10 +28,10 @@ router.post("/add",async(req,res)=>{
             password:hashedPassword,
             batch:"B51 WD Tamil",
             dashboard:{
-                attendance:[1,2,3,4,5,6,8],
-                codekata:[2,3,4,1,5,2,5],
-                webkata:[4,1,2,5,3,2,3],
-                task:[1,2,1,3,1,2,1],
+                attendance:[],
+                codekata:[],
+                webkata:[],
+                task:[],
                 tasks:{
                     count:0,
                     title:"",
