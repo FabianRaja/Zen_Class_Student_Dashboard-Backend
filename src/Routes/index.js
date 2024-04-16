@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 //importing functions from controllers
 import addUser, { findUser, getUser, leaveSubmission, querySubmission, taskSubmission, testimonialSubmission, updateCapstone, updatePassword, updatePortfolio } from "../Controllers/index.js";
 //importing authorization functions 
-import { generateToken, isAuthorized } from "../Authorization/auth.js";
+import { generateToken, isAuthorized, isAuthorizedLogin } from "../Authorization/auth.js";
 //importing transport from nodemailer to send mail
 import { transport } from "../Mailer/nodemailer.js";
 //importing functions from controllers
@@ -102,7 +102,7 @@ router.post("/add",async(req,res)=>{
 })
 
 //to login user
-router.post("/login",async(req,res)=>{
+router.post("/login",isAuthorizedLogin,async(req,res)=>{
     try {
         //finding user using email
         const checkUserData=await getUser(req.body.email);
